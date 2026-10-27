@@ -1,1 +1,0 @@
-var o=[{path:``,title:`Mon Catalogue de Produits`,loadComponent:()=>import(`./chunk-DaskC6j0.js`).then(t=>t.ProduitsListe)}];export{o as ESPACE_PRODUCTEUR_ROUTES};

@@ -1,1 +1,0 @@
-var e=[{path:``,title:`Ustensiles`,loadComponent:()=>import(`./chunk-bfYNMHkd.js`).then(t=>t.UstensilesListe)}];export{e as USTENSILES_ROUTES};

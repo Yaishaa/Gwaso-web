@@ -1,0 +1,1 @@
+var o=[{path:``,title:`Mon Catalogue de Produits`,loadComponent:()=>import(`./chunk-OSf649bk.js`).then(t=>t.ProduitsListe)}];export{o as ESPACE_PRODUCTEUR_ROUTES};

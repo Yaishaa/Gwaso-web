@@ -1,0 +1,1 @@
+var i=[{path:``,title:`Utilisateurs`,loadComponent:()=>import(`./chunk-2_ufzzER.js`).then(t=>t.UtilisateursListe)},{path:`:id`,data:{filAriane:`Détail`},title:`Détail de l'utilisateur`,loadComponent:()=>import(`./chunk-D_45VC2s.js`).then(t=>t.UtilisateurDetail)}];export{i as UTILISATEURS_ROUTES};

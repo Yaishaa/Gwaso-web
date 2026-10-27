@@ -1,0 +1,1 @@
+var e=[{path:``,title:`Ingrédients`,loadComponent:()=>import(`./chunk-DRB_7mfq.js`).then(t=>t.IngredientsListe)}];export{e as INGREDIENTS_ROUTES};

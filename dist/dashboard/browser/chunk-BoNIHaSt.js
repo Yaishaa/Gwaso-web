@@ -1,0 +1,1 @@
+var o=[{path:``,title:`Catégories`,loadComponent:()=>import(`./chunk-4QUTBamg.js`).then(t=>t.CategoriesListe)}];export{o as CATEGORIES_ROUTES};

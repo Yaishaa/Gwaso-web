@@ -1,1 +1,0 @@
-var e=[{path:``,title:`Ingrédients`,loadComponent:()=>import(`./chunk-Y83HpQiV.js`).then(t=>t.IngredientsListe)}];export{e as INGREDIENTS_ROUTES};

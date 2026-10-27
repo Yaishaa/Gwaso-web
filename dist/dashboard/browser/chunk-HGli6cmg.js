@@ -1,0 +1,1 @@
+function i(e){return(e.categories?.length?e.categories.map(t=>t.nom):[e.categorieNom]).filter(Boolean).join(` · `)||null}export{i as t};

@@ -1,0 +1,1 @@
+var o=[{path:``,title:`Profils et droits`,loadComponent:()=>import(`./chunk-ixGv5dZA.js`).then(t=>t.ProfilsListe)}];export{o as PROFILS_ROUTES};
