@@ -1,0 +1,1 @@
+var u=[10,20,50];function m(r,e,n){return r.slice(e*n,(e+1)*n)}function o(r,e,n){let t=Math.max(Math.ceil(n/e)-1,0);return Math.min(r,t)}export{o as n,u as r,m as t};

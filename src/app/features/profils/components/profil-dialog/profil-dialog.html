@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>{{ donnees.profil ? 'Modifier le profil' : 'Nouveau profil' }}</h2>
+
+<form class="formulaire" [formGroup]="formulaire" (ngSubmit)="enregistrer()" novalidate>
+  <mat-dialog-content>
+    <p class="intro">
+      Un profil regroupe des droits. Chaque utilisateur a un seul profil, et peut faire exactement ce que ses droits
+      permettent. Exemples : Administrateur, Consultant, Modérateur vidéos, Chef cuisinier.
+    </p>
+
+    @if (erreur()) {
+      <p class="erreur" role="alert">{{ erreur() }}</p>
+    }
+
+    <mat-form-field class="champ">
+      <mat-label>Nom du profil</mat-label>
+      <input matInput formControlName="nom" maxlength="60" cdkFocusInitial />
+      <mat-error>Le nom est obligatoire.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="champ">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3" maxlength="255"></textarea>
+      <mat-hint>Facultatif · à quoi sert ce profil</mat-hint>
+    </mat-form-field>
+
+    <div class="inscription">
+      <mat-checkbox formControlName="inscription">
+        Profil des inscriptions
+      </mat-checkbox>
+      <p class="explication">
+        @if (inscriptionVerrouillee) {
+          C'est le profil que reçoivent les personnes qui s'inscrivent dans l'application. Pour changer, cochez cette
+          case sur un autre profil.
+        } @else if (inscriptionActuelle) {
+          Les personnes qui s'inscrivent dans l'application reçoivent aujourd'hui « {{ inscriptionActuelle.nom }} ». En
+          cochant, ce profil le remplace.
+        } @else {
+          Les personnes qui s'inscrivent dans l'application recevront ce profil.
+        }
+      </p>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button matButton="outlined" type="button" mat-dialog-close>Annuler</button>
+    <button matButton="filled" type="submit" [disabled]="enCours()">
+      @if (enCours()) {
+        <mat-progress-spinner mode="indeterminate" diameter="18" aria-hidden="true" />
+      }
+      {{ donnees.profil ? 'Enregistrer' : 'Créer le profil' }}
+    </button>
+  </mat-dialog-actions>
+</form>

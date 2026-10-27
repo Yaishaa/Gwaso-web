@@ -1,0 +1,1 @@
+import{At as P,Ir as oe,Wr as pv,kr as m}from"./chunk-D3sqZ3gc.js";import{p as Pa}from"./chunk-EzVJzvVV.js";var p=class t{http=m(pv);url=`${Pa.apiUrl}/admin/statistiques`;getStatistiques(){return this.http.get(this.url).pipe(oe(i=>i.data))}static ɵfac=function(m){return new(m||t)};static ɵprov=P({token:t,factory:t.ɵfac})};export{p as t};

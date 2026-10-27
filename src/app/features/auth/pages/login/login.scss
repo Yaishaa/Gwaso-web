@@ -1,0 +1,181 @@
+@use 'points-de-rupture' as ecran;
+
+// =============================================================================
+// Connexion : une seule carte, centrée, sur le fond chaud de l'application.
+// Aplats de la charte uniquement : ni motif, ni dégradé, ni illustration.
+// =============================================================================
+
+.page-connexion {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: var(--gw-espace-8) var(--gw-espace-4);
+  background: var(--gw-fond);
+}
+
+.colonne {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(440px, 100%);
+}
+
+.logo {
+  width: 96px;
+  height: auto;
+  margin-bottom: var(--gw-espace-6);
+
+  @include ecran.mobile {
+    width: 80px;
+    margin-bottom: var(--gw-espace-5);
+  }
+}
+
+// La carte : un trait terre cuite en haut, rappel du trait orange du logo
+.carte {
+  width: 100%;
+  padding: var(--gw-espace-8) var(--gw-espace-8) var(--gw-espace-6);
+  border: 1px solid var(--gw-bordure);
+  border-top: 4px solid var(--gw-terre-cuite);
+  border-radius: var(--gw-rayon-lg);
+  background: var(--gw-surface);
+  box-shadow: var(--gw-ombre-2);
+
+  @include ecran.mobile {
+    padding: var(--gw-espace-6) var(--gw-espace-5) var(--gw-espace-5);
+  }
+}
+
+.surtitre {
+  color: var(--gw-action);
+  font-size: var(--gw-taille-petit);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin-top: var(--gw-espace-1);
+  color: var(--gw-cacao);
+  font-size: 1.625rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.sous-titre {
+  margin: var(--gw-espace-2) 0 var(--gw-espace-6);
+  color: var(--gw-texte-doux);
+}
+
+.message-erreur {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gw-espace-3);
+  margin-bottom: var(--gw-espace-5);
+  padding: var(--gw-espace-3) var(--gw-espace-4);
+  border: 1px solid color-mix(in srgb, var(--gw-danger) 25%, transparent);
+  border-radius: var(--gw-rayon);
+  background: var(--gw-danger-fond);
+  color: var(--gw-danger);
+  animation: gw-secousse 420ms var(--gw-courbe);
+
+  p {
+    margin: 0;
+  }
+}
+
+.champ {
+  width: 100%;
+  margin-bottom: var(--gw-espace-1);
+}
+
+.icone-champ {
+  margin: 0 var(--gw-espace-2) 0 var(--gw-espace-3);
+  color: var(--gw-texte-doux);
+}
+
+// Bouton : au survol, teinte plus foncée, légère élévation, la flèche avance
+.bouton-connexion {
+  width: 100%;
+  height: 50px;
+  margin-top: var(--gw-espace-3);
+  font-size: 1rem;
+  box-shadow: 0 8px 20px rgb(185 84 18 / 0.22);
+  transition:
+    box-shadow var(--gw-duree) var(--gw-courbe),
+    transform var(--gw-duree) var(--gw-courbe);
+
+  .fleche {
+    transition: transform var(--gw-duree) var(--gw-courbe);
+  }
+
+  &:hover:not(:disabled) {
+    --mat-button-filled-container-color: var(--gw-action-survol);
+    box-shadow: 0 12px 26px rgb(185 84 18 / 0.32);
+    transform: translateY(-2px);
+
+    .fleche {
+      transform: translateX(4px);
+    }
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+}
+
+.devise {
+  margin-top: var(--gw-espace-6);
+  color: var(--gw-texte-doux);
+  font-size: var(--gw-taille-petit);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+// Arrivée en douceur : logo, carte, puis devise
+.apparition {
+  animation: gw-monte 600ms var(--gw-courbe) both;
+
+  &.carte {
+    animation-delay: 90ms;
+  }
+
+  &.devise {
+    animation-delay: 180ms;
+  }
+}
+
+@keyframes gw-monte {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@keyframes gw-secousse {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-6px);
+  }
+  40%,
+  80% {
+    transform: translateX(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .apparition,
+  .message-erreur {
+    animation: none;
+  }
+
+  .bouton-connexion,
+  .bouton-connexion .fleche {
+    transition: none;
+  }
+}

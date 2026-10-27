@@ -1,0 +1,425 @@
+@use 'points-de-rupture' as ecran;
+
+
+.onglet-compteur {
+  margin-left: var(--gw-espace-2);
+  padding: 0 0.4375rem;
+  border-radius: var(--gw-rayon-pilule);
+  background: var(--gw-fond);
+  color: var(--gw-cacao);
+  font-size: var(--gw-taille-petit);
+  font-weight: 600;
+
+  .mat-button-toggle-checked & {
+    background: var(--gw-terre-cuite-pale);
+    color: var(--gw-action);
+  }
+}
+
+// ----- Disposition maître / détail -----
+.disposition {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  align-items: start;
+  gap: var(--gw-espace-4);
+
+  @include ecran.mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sq-liste,
+.sq-detail {
+  border-radius: var(--gw-rayon-lg);
+}
+
+.sq-liste {
+  height: 320px;
+}
+
+.sq-detail {
+  height: 480px;
+}
+
+.selecteur-mobile {
+  width: 100%;
+}
+
+// ----- Liste des profils -----
+.liste-profils {
+  position: sticky;
+  top: calc(var(--gw-hauteur-topbar) + var(--gw-espace-4));
+  padding: var(--gw-espace-2);
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}
+
+.profil {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--gw-espace-3);
+  width: 100%;
+  min-height: 48px;
+  padding: var(--gw-espace-3) var(--gw-espace-4);
+  border: 0;
+  border-radius: var(--gw-rayon);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--gw-duree) var(--gw-courbe);
+
+  &:hover {
+    background: var(--gw-surface-2);
+  }
+}
+
+// Profil choisi : fond karité pâle + barre terre cuite (pas seulement la couleur)
+.profil-actif {
+  background: var(--gw-karite-pale);
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10px;
+    bottom: 10px;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: var(--gw-terre-cuite);
+  }
+
+  &:hover {
+    background: var(--gw-karite-pale);
+  }
+
+  .profil-nom {
+    color: var(--gw-karite);
+  }
+}
+
+.profil-nom {
+  color: var(--gw-cacao);
+  font-weight: 600;
+}
+
+.profil-icone {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--gw-rayon);
+  background: var(--gw-karite-pale);
+  color: var(--gw-karite);
+
+  .profil-actif & {
+    background: var(--gw-action);
+    color: var(--gw-blanc);
+  }
+}
+
+.profil-textes {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.profil-compteurs {
+  color: var(--gw-texte-doux);
+  font-size: var(--gw-taille-petit);
+}
+
+.profil-inactif .profil-nom {
+  color: var(--gw-texte-doux);
+}
+
+// ----- Détail -----
+.detail {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.detail-entete {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gw-espace-4);
+  padding: var(--gw-espace-6) var(--gw-espace-6) var(--gw-espace-4);
+
+  h2 {
+    font-size: var(--gw-taille-titre-section);
+    font-weight: 700;
+  }
+
+  p {
+    margin-top: var(--gw-espace-1);
+    color: var(--gw-texte-doux);
+  }
+
+  @include ecran.mobile {
+    padding: var(--gw-espace-5) var(--gw-espace-4) var(--gw-espace-3);
+
+    // Téléphone : l'icône prendrait une colonne entière, le texte garde toute la largeur
+    .detail-icone {
+      display: none;
+    }
+  }
+}
+
+.outils-droits {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gw-espace-3);
+  padding: 0 var(--gw-espace-6) var(--gw-espace-3);
+
+  @include ecran.mobile {
+    padding: 0 var(--gw-espace-4) var(--gw-espace-3);
+  }
+}
+
+.recherche-droits {
+  flex: 1 1 260px;
+}
+
+.icone-champ {
+  margin: 0 var(--gw-espace-2) 0 var(--gw-espace-3);
+  color: var(--gw-texte-doux);
+}
+
+// ----- Droits du profil, par domaine -----
+.groupes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--gw-espace-3);
+  padding: 0 var(--gw-espace-6) var(--gw-espace-6);
+  transition: opacity var(--gw-duree) var(--gw-courbe);
+
+  @include ecran.mobile {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0 var(--gw-espace-4) var(--gw-espace-5);
+  }
+}
+
+.groupes-chargement {
+  opacity: 0.5;
+}
+
+.groupe {
+  overflow: hidden;
+  border: 1px solid var(--gw-bordure);
+  border-radius: var(--gw-rayon-lg);
+}
+
+.groupe-entete {
+  display: flex;
+  align-items: center;
+  gap: var(--gw-espace-2);
+  padding: var(--gw-espace-2) var(--gw-espace-2) var(--gw-espace-2) var(--gw-espace-3);
+  background: var(--gw-surface-2);
+}
+
+.groupe-icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--gw-karite-pale);
+  color: var(--gw-karite);
+}
+
+.groupe-titre {
+  flex: 1;
+  color: var(--gw-cacao);
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.groupe-compte {
+  color: var(--gw-texte-doux);
+  font-size: var(--gw-taille-petit);
+  font-weight: 600;
+}
+
+.groupe-tout {
+  --mat-button-text-container-height: 32px;
+  font-size: var(--gw-taille-petit);
+}
+
+.groupe-droits {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.droit {
+  display: flex;
+  align-items: center;
+  gap: var(--gw-espace-3);
+  padding: var(--gw-espace-2) var(--gw-espace-3);
+  border-top: 1px solid var(--gw-bordure);
+  transition: background-color var(--gw-duree) var(--gw-courbe);
+}
+
+.droit-donne {
+  background: var(--gw-terre-cuite-pale);
+}
+
+.droit-inactif .droit-textes {
+  opacity: 0.6;
+}
+
+.droit-textes {
+  flex: 1;
+  min-width: 0;
+}
+
+.droit-libelle {
+  display: block;
+  color: var(--gw-cacao);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.droit .droit-code {
+  color: var(--gw-texte-doux);
+  font-size: 0.6875rem;
+  font-weight: 500;
+}
+
+.droit-code {
+  display: block;
+  color: var(--gw-cacao);
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  font-size: var(--gw-taille-label);
+  font-weight: 600;
+  // Un long code (RECETTE_VALIDER_...) passe à la ligne au lieu de pousser le tableau
+  overflow-wrap: anywhere;
+}
+
+.aucun {
+  color: var(--gw-texte-doux);
+}
+
+.barre-enregistrement {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gw-espace-3);
+  padding: var(--gw-espace-3) var(--gw-espace-6);
+  border-top: 1px solid var(--gw-bordure);
+  background: var(--gw-surface-2);
+  transition: background-color var(--gw-duree) var(--gw-courbe);
+
+  @include ecran.mobile {
+    padding: var(--gw-espace-3) var(--gw-espace-4);
+  }
+}
+
+// Modifications en attente : la barre attire l'attention
+.barre-modifiee {
+  background: var(--gw-terre-cuite-pale);
+}
+
+.non-enregistre {
+  color: var(--gw-karite);
+  font-weight: 600;
+}
+
+.barre-actions {
+  display: flex;
+  gap: var(--gw-espace-2);
+}
+
+.item-danger {
+  color: var(--gw-danger);
+}
+
+// ----- Catalogue des droits : la matrice (composant MatriceDroits) occupe la carte -----
+.catalogue {
+  overflow: hidden;
+}
+
+.detail-icone {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--gw-rayon-lg);
+  background: var(--gw-terre-cuite-pale);
+  color: var(--gw-action);
+}
+
+.detail-textes {
+  flex: 1;
+  min-width: 0;
+}
+
+.detail-faits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gw-espace-2);
+  margin: var(--gw-espace-3) 0 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px var(--gw-espace-3);
+    // Arrondi modéré : une étiquette sur deux lignes reste propre
+    border-radius: var(--gw-rayon);
+    background: var(--gw-fond);
+    color: var(--gw-cacao);
+    font-size: var(--gw-taille-petit);
+    font-weight: 500;
+  }
+}
+
+// Ancien profil sans accès : à compléter avant tout
+.a-completer {
+  display: flex;
+  align-items: center;
+  gap: var(--gw-espace-3);
+  margin: 0 var(--gw-espace-6) var(--gw-espace-4);
+  padding: var(--gw-espace-4);
+  border-radius: var(--gw-rayon);
+  background: var(--gw-danger-fond);
+  color: var(--gw-danger);
+
+  > div {
+    flex: 1;
+    color: var(--gw-cacao);
+    font-size: var(--gw-taille-petit);
+  }
+
+  @include ecran.mobile {
+    flex-wrap: wrap;
+    margin-inline: var(--gw-espace-4);
+  }
+}
+
+.a-completer-titre {
+  font-size: var(--gw-taille-texte);
+  font-weight: 700;
+}

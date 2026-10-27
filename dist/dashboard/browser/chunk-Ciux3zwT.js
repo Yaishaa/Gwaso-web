@@ -1,0 +1,1 @@
+var o=[{path:``,title:`Catégories`,loadComponent:()=>import(`./chunk-BH3vjerZ.js`).then(t=>t.CategoriesListe)}];export{o as CATEGORIES_ROUTES};

@@ -1,0 +1,1 @@
+import{Hr as pi}from"./chunk-D3sqZ3gc.js";import{p as Pa}from"./chunk-EzVJzvVV.js";var n=class t{transform(r){return r?r.startsWith(`http`)?r:Pa.serverUrl+r:null}static ɵfac=function(p){return new(p||t)};static ɵpipe=pi({name:`fichier`,type:t,pure:!0})};export{n as t};

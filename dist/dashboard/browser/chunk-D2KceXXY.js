@@ -1,0 +1,1 @@
+import{Xr as qt}from"./chunk-D3sqZ3gc.js";function s(n={}){let e=new qt;for(let[a,t]of Object.entries(n))t!=null&&t!==``&&(e=e.set(a,String(t)));return e}export{s as t};

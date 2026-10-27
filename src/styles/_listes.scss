@@ -1,0 +1,134 @@
+// =============================================================================
+// Pages de liste : onglets de statut, barre de recherche et filtres, résumé.
+// Partagées par les vidéos et les défis (même disposition que les recettes).
+// Utilisation : class="gw-onglets-conteneur", "gw-onglets", "gw-outils"...
+// =============================================================================
+@use 'points-de-rupture' as ecran;
+
+.gw-onglets-conteneur {
+  margin-bottom: var(--gw-espace-5);
+
+  // Téléphone : les onglets défilent horizontalement, du bord gauche du contenu jusqu'au bord de l'écran.
+  // Un espace final (::after) laisse la même marge que les autres blocs quand on arrive au bout,
+  // et un fondu à droite montre qu'il y a la suite.
+  @include ecran.mobile {
+    display: flex;
+    margin-inline: calc(var(--gw-espace-4) * -1);
+    padding-left: var(--gw-espace-4);
+    overflow-x: auto;
+    scrollbar-width: none;
+    mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+
+    > * {
+      flex-shrink: 0;
+    }
+
+    &::after {
+      content: '';
+      flex: 0 0 var(--gw-espace-4);
+    }
+  }
+}
+
+// Onglets de section (« Demandes / Membres », « Profils / Catalogue ») : du texte souligné,
+// comme de vrais onglets. Les filtres de statut, eux, sont des tuiles (app-filtre-statuts).
+.mat-button-toggle-group.gw-sections {
+  --mat-button-toggle-height: 44px;
+  --mat-button-toggle-text-color: var(--gw-texte-doux);
+  --mat-button-toggle-selected-state-text-color: var(--gw-cacao);
+  --mat-button-toggle-selected-state-background-color: transparent;
+  --mat-button-toggle-background-color: transparent;
+  --mat-button-toggle-divider-color: transparent;
+  --mat-button-toggle-label-text-weight: 600;
+  --mat-button-toggle-state-layer-color: var(--gw-cacao);
+  display: flex;
+  gap: var(--gw-espace-6);
+  margin-bottom: var(--gw-espace-5);
+  border: 0;
+  border-bottom: 1px solid var(--gw-bordure);
+  border-radius: 0;
+  background: transparent;
+
+  .mat-button-toggle {
+    margin-bottom: -1px;
+    border: 0 !important;
+    border-bottom: 3px solid transparent !important;
+    border-radius: 0;
+    transition:
+      border-color var(--gw-duree) var(--gw-courbe),
+      color var(--gw-duree) var(--gw-courbe);
+  }
+
+  .mat-button-toggle-checked {
+    border-bottom-color: var(--gw-action) !important;
+  }
+
+  .mat-button-toggle-label-content {
+    padding: 0 var(--gw-espace-1);
+  }
+
+  @include ecran.mobile {
+    gap: var(--gw-espace-4);
+  }
+}
+
+
+.gw-onglet-compteur {
+  margin-left: var(--gw-espace-2);
+  padding: 0 0.4375rem;
+  border-radius: var(--gw-rayon-pilule);
+  background: var(--gw-fond);
+  color: var(--gw-cacao);
+  font-size: var(--gw-taille-petit);
+  font-weight: 600;
+
+  .mat-button-toggle-checked & {
+    background: var(--gw-terre-cuite-pale);
+    color: var(--gw-action);
+  }
+}
+
+.gw-outils {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gw-espace-3);
+  padding: var(--gw-espace-5) var(--gw-espace-5) 0;
+
+  @include ecran.mobile {
+    padding: var(--gw-espace-4) var(--gw-espace-4) 0;
+  }
+
+  .gw-champ-recherche {
+    flex: 1 1 280px;
+  }
+
+  .gw-champ-filtre {
+    flex: 0 1 220px;
+
+    @include ecran.mobile {
+      flex: 1 1 100%;
+    }
+  }
+
+  .gw-icone-champ {
+    margin: 0 var(--gw-espace-2) 0 var(--gw-espace-3);
+    color: var(--gw-texte-doux);
+  }
+}
+
+.gw-resume {
+  display: flex;
+  align-items: center;
+  gap: var(--gw-espace-2);
+  min-height: 44px;
+  padding: var(--gw-espace-2) var(--gw-espace-5);
+  color: var(--gw-texte-doux);
+
+  strong {
+    color: var(--gw-cacao);
+  }
+
+  @include ecran.mobile {
+    padding-inline: var(--gw-espace-4);
+  }
+}

@@ -1,0 +1,441 @@
+@use 'points-de-rupture' as ecran;
+
+// Scène sombre, comme l'écran d'un téléphone : la vidéo est au centre de l'attention
+.scene {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - 190px);
+  min-height: 520px;
+  overflow: hidden;
+  border-radius: var(--gw-rayon-lg);
+  background: var(--gw-cacao-profond);
+
+  @include ecran.mobile {
+    height: calc(100dvh - 140px);
+    margin-inline: calc(var(--gw-espace-4) * -1);
+    border-radius: 0;
+  }
+}
+
+// ----- Barre du haut -----
+.barre {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gw-espace-3);
+  padding: var(--gw-espace-3) var(--gw-espace-4);
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+}
+
+.retour {
+  --mat-button-text-label-text-color: var(--gw-sidebar-texte);
+}
+
+.choix-fil {
+  --mat-button-toggle-selected-state-background-color: var(--gw-terre-cuite);
+  --mat-button-toggle-selected-state-text-color: var(--gw-cacao-profond);
+  --mat-button-toggle-text-color: var(--gw-sidebar-texte);
+  --mat-button-toggle-background-color: transparent;
+  --mat-button-toggle-height: 36px;
+  --mat-button-toggle-divider-color: rgb(255 255 255 / 0.15);
+  margin-inline: auto;
+  border-color: rgb(255 255 255 / 0.15);
+}
+
+.astuce {
+  color: var(--gw-sidebar-texte-doux);
+  font-size: var(--gw-taille-petit);
+
+  kbd {
+    padding: 1px 6px;
+    border: 1px solid rgb(255 255 255 / 0.2);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.75rem;
+  }
+
+  @include ecran.tablette-et-moins {
+    display: none;
+  }
+}
+
+// ----- Fil : une vidéo par hauteur d'écran, défilement aimanté -----
+.fil {
+  flex: 1;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.diapo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gw-espace-4);
+  height: 100%;
+  padding: var(--gw-espace-4);
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  transition: opacity var(--gw-duree) var(--gw-courbe);
+
+  @include ecran.mobile {
+    padding: 0;
+  }
+}
+
+.en-cours {
+  opacity: 0.5;
+}
+
+// Écran 9:16 qui tient dans la hauteur disponible
+.ecran {
+  position: relative;
+  height: 100%;
+  aspect-ratio: 9 / 16;
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: var(--gw-rayon-lg);
+  background: #000;
+  box-shadow: 0 20px 60px rgb(0 0 0 / 0.45);
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+  }
+
+  @include ecran.mobile {
+    width: 100%;
+    aspect-ratio: auto;
+    border-radius: 0;
+  }
+}
+
+// Légende en bas, lisible grâce au dégradé
+.legende {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gw-espace-1);
+  padding: var(--gw-espace-10) var(--gw-espace-4) var(--gw-espace-8);
+  background: linear-gradient(to top, rgb(0 0 0 / 0.85), rgb(0 0 0 / 0));
+  color: var(--gw-blanc);
+  pointer-events: none;
+
+  @include ecran.mobile {
+    padding-right: 72px; // place pour la colonne d'actions
+  }
+}
+
+.auteur {
+  display: flex;
+  align-items: center;
+  gap: var(--gw-espace-2);
+  font-size: var(--gw-taille-petit);
+}
+
+.auteur-nom {
+  font-weight: 600;
+}
+
+.date {
+  color: rgb(255 255 255 / 0.75);
+}
+
+.titre {
+  color: var(--gw-blanc); // le style global des titres est cacao : illisible sur la vidéo
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.description {
+  display: -webkit-box;
+  overflow: hidden;
+  color: rgb(255 255 255 / 0.9);
+  font-size: var(--gw-taille-petit);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.etiquette {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--gw-terre-cuite-pale-2);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.bouton-son {
+  position: absolute;
+  top: var(--gw-espace-3);
+  right: var(--gw-espace-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 0.45);
+  color: var(--gw-blanc);
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+
+  &:focus-visible {
+    outline: 2px solid var(--gw-terre-cuite);
+    outline-offset: 2px;
+  }
+}
+
+// ----- Colonne d'actions -----
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gw-espace-3);
+  color: var(--gw-blanc);
+
+  // Sur téléphone, les actions passent par-dessus la vidéo, comme dans l'application
+  @include ecran.mobile {
+    position: absolute;
+    right: var(--gw-espace-2);
+    bottom: 120px;
+    z-index: 1;
+  }
+}
+
+.diapo {
+  @include ecran.mobile {
+    position: relative;
+  }
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.5);
+}
+
+.separateur {
+  width: 24px;
+  height: 1px;
+  background: rgb(255 255 255 / 0.2);
+}
+
+.action {
+  --mat-icon-button-icon-color: var(--gw-blanc);
+  width: 48px;
+  height: 48px;
+  background: rgb(255 255 255 / 0.12);
+  backdrop-filter: blur(4px);
+
+  &:hover {
+    background: rgb(255 255 255 / 0.22);
+  }
+}
+
+.action-publier {
+  background: var(--gw-succes, #1e7a3c);
+
+  &:hover {
+    background: var(--gw-succes, #1e7a3c);
+    filter: brightness(1.1);
+  }
+}
+
+.action-refuser,
+.action-supprimer:hover {
+  background: var(--gw-danger);
+}
+
+// ----- États -----
+.etat,
+.fin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: var(--gw-espace-6);
+  scroll-snap-align: start;
+}
+
+.etat {
+  ::ng-deep app-empty-state {
+    padding: var(--gw-espace-6);
+    border-radius: var(--gw-rayon-lg);
+    background: var(--gw-surface);
+  }
+}
+
+.fin {
+  gap: var(--gw-espace-2);
+  min-height: 160px;
+  color: var(--gw-sidebar-texte-doux);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fil {
+    scroll-behavior: auto;
+  }
+}
+
+// ----- J'aime, commentaires -----
+.stat-bouton {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: transform var(--gw-duree) var(--gw-courbe);
+
+  &:hover:not(:disabled) {
+    transform: scale(1.08);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &:focus-visible {
+    border-radius: var(--gw-rayon);
+    outline: 2px solid var(--gw-terre-cuite);
+    outline-offset: 4px;
+  }
+}
+
+.aime ng-icon {
+  color: #ff4d6d;
+
+  // Cœur plein (les icônes Lucide sont dessinées en contour)
+  ::ng-deep svg {
+    fill: currentcolor;
+  }
+}
+
+.ouvert ng-icon {
+  color: var(--gw-terre-cuite);
+}
+
+.scene {
+  position: relative;
+}
+
+// Tablette et ordinateur : la vidéo se décale pour que ses boutons restent visibles à côté du panneau
+.avec-commentaires .fil {
+  @include ecran.tablette {
+    padding-right: calc(min(380px, 50%) + var(--gw-espace-3));
+  }
+
+  @include ecran.bureau {
+    padding-right: 400px;
+  }
+}
+
+.panneau-commentaires {
+  position: absolute;
+  z-index: 2;
+  inset: 60px var(--gw-espace-3) var(--gw-espace-3) auto;
+  width: min(380px, calc(100% - 24px));
+  border-radius: var(--gw-rayon-lg);
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.4);
+
+  @include ecran.mobile {
+    inset: auto 0 0;
+    width: 100%;
+    height: 70%;
+    border-radius: var(--gw-rayon-lg) var(--gw-rayon-lg) 0 0;
+  }
+}
+
+// ----- Description : 2 lignes, puis « voir plus » -----
+.description.ouverte {
+  display: block;
+  overflow-y: auto;
+  max-height: 40vh;
+  pointer-events: auto;
+}
+
+.voir-plus {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--gw-blanc);
+  font: inherit;
+  font-size: var(--gw-taille-petit);
+  font-weight: 700;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+// ----- Avancement de la vidéo -----
+.progression {
+  position: absolute;
+  inset: auto var(--gw-espace-3) 6px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--gw-espace-2);
+
+  input {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(
+      to right,
+      var(--gw-terre-cuite) var(--avance, 0%),
+      rgb(255 255 255 / 0.3) var(--avance, 0%)
+    );
+    appearance: none;
+    cursor: pointer;
+
+    &::-webkit-slider-thumb {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--gw-blanc);
+      appearance: none;
+    }
+
+    &::-moz-range-thumb {
+      width: 12px;
+      height: 12px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--gw-blanc);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--gw-terre-cuite);
+      outline-offset: 4px;
+    }
+  }
+}
+
+.temps {
+  color: var(--gw-blanc);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.6);
+  white-space: nowrap;
+}

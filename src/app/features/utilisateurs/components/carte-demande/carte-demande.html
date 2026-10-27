@@ -1,0 +1,97 @@
+@let d = demande();
+
+<article class="carte gw-carte" [attr.aria-labelledby]="'demande-' + d.id">
+  <header class="entete">
+    <app-avatar [prenom]="d.prenom" [nom]="d.nom" [photo]="d.photoProfil" />
+    <div class="identite">
+      <h3 [id]="'demande-' + d.id">
+        <a [routerLink]="['/utilisateurs', d.id]" [queryParams]="{ role: d.origine === 'cuisinier' ? 'CUISINIER' : d.type }"
+          >{{ d.prenom }} {{ d.nom }}</a
+        >
+      </h3>
+      <p class="role">
+        <ng-icon [name]="icone()" size="0.875rem" aria-hidden="true" />
+        <span class="sr-only">Demande de statut : </span>
+        @if (d.origine === 'cuisinier') {
+          Cuisinier qui veut devenir {{ libelleRole() | lowercase }}
+        } @else {
+          {{ libelleRole() }}
+        }
+      </p>
+    </div>
+    <span class="date" [title]="d.dateInscription | date: 'd MMMM y à HH:mm'">{{
+      d.dateInscription | depuis
+    }}</span>
+  </header>
+
+  <dl class="infos">
+    @if (d.email) {
+      <div>
+        <dt>Email</dt>
+        <dd>
+          <a [href]="'mailto:' + d.email">{{ d.email }}</a>
+        </dd>
+      </div>
+    }
+    @if (d.telephone) {
+      <div>
+        <dt>Téléphone</dt>
+        <dd>
+          <a [href]="'tel:' + d.telephone">{{ d.telephone }}</a>
+        </dd>
+      </div>
+    }
+    @if (d.localite) {
+      <div>
+        <dt>Localité</dt>
+        <dd>
+          <!-- La localité d'un fournisseur est un lieu choisi sur la carte : on peut l'y voir -->
+          @if (d.latitude != null && d.longitude != null) {
+            <a class="lien-carte" [href]="lienCarte(d.latitude, d.longitude)" target="_blank" rel="noopener">
+              <ng-icon name="lucideMapPin" size="0.875rem" aria-hidden="true" />
+              {{ d.localite }}
+              <span class="sr-only">(carte, nouvel onglet)</span>
+            </a>
+          } @else {
+            {{ d.localite }}
+          }
+        </dd>
+      </div>
+    }
+  </dl>
+
+  @if (d.motivation) {
+    <blockquote class="motivation">« {{ d.motivation }} »</blockquote>
+  }
+
+  <!-- Le justificatif est la pièce principale de la décision : il est mis en évidence -->
+  @if (d.preuveUrl) {
+    <button type="button" class="justificatif" (click)="voirJustificatif()">
+      <ng-icon name="lucideBadgeCheck" size="1.125rem" aria-hidden="true" />
+      <strong>Voir le justificatif</strong>
+      <ng-icon class="fleche" name="lucideArrowRight" size="1rem" aria-hidden="true" />
+    </button>
+  } @else {
+    <p class="justificatif justificatif-absent">
+      <ng-icon name="lucideTriangleAlert" size="1.125rem" aria-hidden="true" />
+      Aucun justificatif fourni
+    </p>
+  }
+  <p class="attendu">Attendu : {{ justificatifAttendu() }}</p>
+
+  <footer class="actions">
+    <button
+      matButton="outlined"
+      type="button"
+      class="gw-bouton-danger"
+      [disabled]="enCours()"
+      (click)="refuser.emit(d)"
+    >
+      Refuser…
+    </button>
+    <button matButton="filled" type="button" [disabled]="enCours()" (click)="valider.emit(d)">
+      <ng-icon name="lucideCircleCheck" size="1.125rem" aria-hidden="true" />
+      Valider
+    </button>
+  </footer>
+</article>

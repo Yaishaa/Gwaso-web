@@ -1,0 +1,1 @@
+import{Kn as dr}from"./chunk-D3sqZ3gc.js";function o(n,t){if(n instanceof dr){if(n.status===0)return`Le serveur ne répond pas. Vérifiez votre connexion.`;let r=n.error?.message;if(typeof r==`string`&&r.trim())return r}return t}export{o as t};

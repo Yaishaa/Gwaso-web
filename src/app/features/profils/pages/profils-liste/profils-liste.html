@@ -1,0 +1,313 @@
+<app-page-header
+  surtitre="Paramètres"
+  titre="Profils et droits"
+  description="Chaque utilisateur a un seul profil, et chaque profil a ses droits. Un droit ou un profil peut être désactivé sans être supprimé."
+>
+  @if (ongletActif() === 'profils') {
+    <button matButton="filled" type="button" (click)="nouveauProfil()">
+      <ng-icon name="lucideShieldCheck" size="1.125rem" aria-hidden="true" />
+      Nouveau profil
+    </button>
+  } @else {
+    <button matButton="filled" type="button" (click)="nouveauDroit()">Nouveau droit</button>
+  }
+</app-page-header>
+
+<mat-button-toggle-group
+  class="onglets gw-sections"
+  name="onglet"
+  aria-label="Choisir la vue"
+  [value]="ongletActif()"
+  (change)="changerOnglet($event.value)"
+  hideSingleSelectionIndicator
+>
+  <mat-button-toggle value="profils">
+    Profils
+    <span class="onglet-compteur gw-chiffres">{{ profils().length }}</span>
+  </mat-button-toggle>
+  <mat-button-toggle value="droits">
+    Catalogue des droits
+    <span class="onglet-compteur gw-chiffres">{{ droits().length }}</span>
+  </mat-button-toggle>
+</mat-button-toggle-group>
+
+@if (chargement()) {
+  <div class="disposition" aria-busy="true" aria-label="Chargement des profils">
+    <div class="gw-squelette sq-liste"></div>
+    <div class="gw-squelette sq-detail"></div>
+  </div>
+} @else if (erreur()) {
+  <div class="gw-carte">
+    <app-empty-state
+      titre="Impossible de charger les profils"
+      message="Vérifiez que le serveur est lancé, puis réessayez."
+      icone="lucideCircleAlert"
+      ton="erreur"
+    >
+      <button matButton="filled" type="button" (click)="charger()">Réessayer</button>
+    </app-empty-state>
+  </div>
+} @else if (ongletActif() === 'profils') {
+  <!-- ===================== Profils ===================== -->
+  @if (profils().length === 0) {
+    <div class="gw-carte">
+      <app-empty-state
+        titre="Aucun profil pour le moment"
+        message="Créez un profil, par exemple « Modérateur recettes », puis choisissez ses droits."
+        icone="lucideShieldCheck"
+      >
+        <button matButton="filled" type="button" (click)="nouveauProfil()">Créer un profil</button>
+      </app-empty-state>
+    </div>
+  } @else {
+    <div class="disposition">
+      <!-- Liste des profils (sélecteur sur téléphone) -->
+      @if (ecran.mobile()) {
+        <mat-form-field class="selecteur-mobile" subscriptSizing="dynamic">
+          <mat-label>Profil</mat-label>
+          <mat-select
+            [value]="profilSelectionneId()"
+            (selectionChange)="choisirProfil($event.value)"
+          >
+            @for (profil of profils(); track profil.id) {
+              <mat-option [value]="profil.id">{{ profil.nom }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      } @else {
+        <nav class="liste-profils gw-carte" aria-label="Profils">
+          <ul>
+            @for (profil of profils(); track profil.id) {
+              <li>
+                <button
+                  type="button"
+                  class="profil"
+                  [class.profil-actif]="profil.id === profilSelectionneId()"
+                  [class.profil-inactif]="!profil.actif"
+                  [attr.aria-current]="profil.id === profilSelectionneId() ? 'true' : null"
+                  (click)="choisirProfil(profil.id)"
+                >
+                  <span class="profil-icone" aria-hidden="true">
+                    <ng-icon [name]="iconeProfil(profil)" size="1.125rem" />
+                  </span>
+                  <span class="profil-textes">
+                    <span class="profil-nom">
+                      {{ profil.nom }}
+                      @if (!profil.actif) {
+                        <span class="gw-etiquette gw-etiquette-neutre">Désactivé</span>
+                      }
+                    </span>
+                    <span class="profil-compteurs gw-chiffres">
+                      {{ profil.nbDroits }} droit{{ profil.nbDroits > 1 ? 's' : '' }} ·
+                      {{ profil.nbUtilisateurs }} compte{{ profil.nbUtilisateurs > 1 ? 's' : '' }}
+                    </span>
+                  </span>
+                </button>
+              </li>
+            }
+          </ul>
+        </nav>
+      }
+
+      <!-- Détail du profil choisi -->
+      @if (profilSelectionne(); as profil) {
+        <section class="detail gw-carte" aria-labelledby="titre-profil">
+          <header class="detail-entete">
+            <span class="detail-icone" aria-hidden="true">
+              <ng-icon [name]="iconeProfil(profil)" size="1.5rem" />
+            </span>
+            <div class="detail-textes">
+              <h2 id="titre-profil">
+                {{ profil.nom }}
+                @if (!profil.actif) {
+                  <span class="gw-etiquette gw-etiquette-neutre">Désactivé</span>
+                }
+                @if (profil.systeme) {
+                  <span class="gw-etiquette" matTooltip="Profil des administrateurs : il a toujours tous les droits du catalogue">Système</span>
+                }
+                @if (profil.inscription) {
+                  <span class="gw-etiquette" matTooltip="Donné aux personnes qui s'inscrivent dans l'application">Inscriptions</span>
+                }
+              </h2>
+              <p>{{ profil.description ?? 'Aucune description.' }}</p>
+              <ul class="detail-faits">
+                <li class="gw-chiffres"><ng-icon name="lucideUsers" size="0.875rem" aria-hidden="true" /> {{ profil.nbUtilisateurs }} compte{{ profil.nbUtilisateurs > 1 ? 's' : '' }}</li>
+                @if (profil.systeme) {
+                  <li><ng-icon name="lucideShieldCheck" size="0.875rem" aria-hidden="true" /> Garde toujours l'accès au dashboard et la gestion des profils</li>
+                }
+              </ul>
+            </div>
+            <button
+              matIconButton
+              type="button"
+              [matMenuTriggerFor]="menuProfil"
+              [attr.aria-label]="'Actions pour le profil ' + profil.nom"
+              matTooltip="Modifier, désactiver ou supprimer"
+            >
+              <ng-icon name="lucideEllipsis" size="1.25rem" aria-hidden="true" />
+            </button>
+            <mat-menu #menuProfil="matMenu" xPosition="before">
+              <button mat-menu-item type="button" (click)="modifierProfil(profil)">
+                <ng-icon name="lucidePencil" size="1.125rem" aria-hidden="true" />
+                <span>Modifier le profil</span>
+              </button>
+              <!-- Le profil système et celui des inscriptions ne se désactivent ni ne se suppriment -->
+              @if (!profil.systeme && !profil.inscription) {
+                <button mat-menu-item type="button" (click)="changerActivationProfil(profil)">
+                  <ng-icon [name]="profil.actif ? 'lucideBan' : 'lucideCircleCheck'" size="1.125rem" aria-hidden="true" />
+                  <span>{{ profil.actif ? 'Désactiver le profil…' : 'Réactiver le profil' }}</span>
+                </button>
+                <button mat-menu-item type="button" class="item-danger" (click)="supprimerProfil(profil)">
+                  <ng-icon name="lucideTrash2" size="1.125rem" aria-hidden="true" />
+                  <span>Supprimer le profil…</span>
+                </button>
+              }
+            </mat-menu>
+          </header>
+
+          @if (!profil.actif) {
+            <div class="a-completer" role="status">
+              <ng-icon name="lucideBan" size="1.25rem" aria-hidden="true" />
+              <div>
+                <p class="a-completer-titre">Profil désactivé</p>
+                <p>Il n'est plus proposé pour les nouveaux comptes, et ses comptes n'ont plus ses droits.</p>
+              </div>
+              <button matButton="filled" type="button" (click)="changerActivationProfil(profil)">Réactiver</button>
+            </div>
+          }
+
+          @if (droits().length === 0) {
+            <app-empty-state
+              titre="Aucun droit dans le catalogue"
+              message="Créez d'abord les droits (par exemple RECETTE_VALIDER), puis revenez les attribuer."
+              icone="lucideShieldCheck"
+            >
+              <button matButton="outlined" type="button" (click)="changerOnglet('droits')">
+                Ouvrir le catalogue des droits
+              </button>
+            </app-empty-state>
+          } @else {
+            <div class="outils-droits">
+              <mat-form-field class="recherche-droits" subscriptSizing="dynamic">
+                <mat-label>Filtrer les droits</mat-label>
+                <ng-icon
+                  matPrefix
+                  class="icone-champ"
+                  name="lucideSearch"
+                  size="1.125rem"
+                  aria-hidden="true"
+                />
+                <input
+                  matInput
+                  type="search"
+                  [ngModel]="rechercheDroit()"
+                  (ngModelChange)="rechercheDroit.set($event)"
+                />
+              </mat-form-field>
+            </div>
+
+            <!-- Droits regroupés par domaine : un interrupteur par droit -->
+            <div class="groupes" [class.groupes-chargement]="chargementDroitsProfil()" [attr.aria-busy]="chargementDroitsProfil()">
+              @for (groupe of groupesDroits(); track groupe.cle) {
+                @let coches = nbCochesGroupe(groupe);
+                <section class="groupe" [attr.aria-labelledby]="'groupe-' + groupe.cle">
+                  <header class="groupe-entete">
+                    <span class="groupe-icone" aria-hidden="true"><ng-icon [name]="groupe.icone" size="1rem" /></span>
+                    <h3 class="groupe-titre" [id]="'groupe-' + groupe.cle">{{ groupe.libelle }}</h3>
+                    <span class="groupe-compte gw-chiffres">{{ coches }}/{{ groupe.droits.length }}</span>
+                    <button
+                      matButton
+                      type="button"
+                      class="groupe-tout"
+                      [disabled]="chargementDroitsProfil()"
+                      (click)="basculerGroupe(groupe, coches < groupe.droits.length)"
+                    >
+                      {{ coches < groupe.droits.length ? 'Tout donner' : 'Tout retirer' }}
+                    </button>
+                  </header>
+                  <ul class="groupe-droits">
+                    @for (droit of groupe.droits; track droit.id) {
+                      <li class="droit" [class.droit-donne]="droitsCoches().has(droit.id)" [class.droit-inactif]="!droit.actif">
+                        <mat-slide-toggle
+                          [checked]="droitsCoches().has(droit.id)"
+                          [disabled]="chargementDroitsProfil() || verrouille(profil, droit)"
+                          [matTooltip]="verrouille(profil, droit) ? 'Indispensable : le profil système le garde toujours' : ''"
+                          (change)="basculerDroit(droit.id, $event.checked)"
+                          [aria-label]="libelleDroit(droit)"
+                          hideIcon
+                        />
+                        <div class="droit-textes">
+                          <span class="droit-libelle">{{ libelleDroit(droit) }}</span>
+                          <span class="droit-code">{{ droit.action }}</span>
+                        </div>
+                        @if (!droit.actif) {
+                          <span class="gw-etiquette gw-etiquette-neutre" matTooltip="Désactivé dans le catalogue : il n'est donné à personne">
+                            Désactivé
+                          </span>
+                        }
+                      </li>
+                    }
+                  </ul>
+                </section>
+              } @empty {
+                <p class="aucun">Aucun droit ne correspond à « {{ rechercheDroit() }} ».</p>
+              }
+            </div>
+
+            <!-- Barre d'enregistrement : toujours visible en bas du panneau -->
+            <footer class="barre-enregistrement" [class.barre-modifiee]="modifie()">
+              <p aria-live="polite">
+                <strong class="gw-chiffres">{{ droitsCoches().size }}</strong> droit(s) sur
+                {{ droits().length }}
+                @if (modifie()) {
+                  · <span class="non-enregistre">modifications non enregistrées</span>
+                }
+              </p>
+              <div class="barre-actions">
+                <button
+                  matButton
+                  type="button"
+                  [disabled]="!modifie() || enregistrement()"
+                  (click)="annulerModifications()"
+                >
+                  Annuler
+                </button>
+                <button
+                  matButton="filled"
+                  type="button"
+                  [disabled]="!modifie() || enregistrement()"
+                  (click)="enregistrerDroits()"
+                >
+                  {{ enregistrement() ? 'Enregistrement…' : 'Enregistrer les droits' }}
+                </button>
+              </div>
+            </footer>
+          }
+        </section>
+      }
+    </div>
+  }
+} @else {
+  <!-- ===================== Catalogue des droits : qui peut faire quoi ===================== -->
+  <section class="gw-carte catalogue" aria-labelledby="titre-catalogue">
+    <h2 id="titre-catalogue" class="sr-only">Catalogue des droits</h2>
+    @if (droits().length === 0) {
+      <app-empty-state
+        titre="Aucun droit défini"
+        message="Un droit autorise une action précise, par exemple valider les recettes."
+        icone="lucideShieldCheck"
+      >
+        <button matButton="filled" type="button" (click)="nouveauDroit()">Créer un droit</button>
+      </app-empty-state>
+    } @else {
+      <app-matrice-droits
+        [profils]="profils()"
+        [droits]="droits()"
+        (profilModifie)="apresMatrice($event)"
+        (modifierDroit)="modifierDroit($event)"
+        (supprimerDroit)="supprimerDroit($event)"
+        (basculerActivation)="changerActivationDroit($event)"
+      />
+    }
+  </section>
+}

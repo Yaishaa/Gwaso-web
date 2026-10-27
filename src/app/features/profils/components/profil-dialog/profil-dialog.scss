@@ -1,0 +1,38 @@
+// display: contents : le formulaire ne casse pas la mise en page du dialogue
+.formulaire {
+  display: contents;
+}
+
+.intro {
+  margin-bottom: var(--gw-espace-5);
+  color: var(--gw-texte-doux);
+}
+
+.erreur {
+  margin-bottom: var(--gw-espace-4);
+  padding: var(--gw-espace-3) var(--gw-espace-4);
+  border-radius: var(--gw-rayon);
+  background: var(--gw-danger-fond);
+  color: var(--gw-danger);
+}
+
+.champ {
+  width: 100%;
+}
+
+
+.explication {
+  margin-bottom: var(--gw-espace-3);
+  color: var(--gw-texte-doux);
+  font-size: var(--gw-taille-petit);
+}
+
+
+
+.inscription {
+  margin-top: var(--gw-espace-2);
+}
+
+.inscription .explication {
+  margin: 0 0 0 32px;
+}

@@ -1,0 +1,1 @@
+import{Hr as pi}from"./chunk-D3sqZ3gc.js";var n={G:`g`,KG:`kg`,ML:`ml`,L:`L`,PIECE:`pièce(s)`,CUILLERE_SOUPE:`c. à soupe`,CUILLERE_CAFE:`c. à café`,PINCEE:`pincée(s)`,BOL:`bol(s)`,TASSE:`tasse(s)`,SACHET:`sachet(s)`};var t=class r{transform(e){return e?n[e]??e.toLowerCase():``}static ɵfac=function(i){return new(i||r)};static ɵpipe=pi({name:`unite`,type:r,pure:!0})};export{t};
